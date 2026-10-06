@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: myapp-rs-set-based
+  labels:
+    app: myapp
+    type: frontend
+spec: 
+  replicas: 3
+  selector:
+    matchExpressions:
+      - key: app
+        operator: In
+        values:
+          - nginx
+          - python
+      - key: environment
+        operator: NotIn
+        values:
+          - dev
+      - key: tier
+        operator: Exists
+      - key: debug
+        operator: DoesNotExist
+  template:
+    metadata:
+      name: myapp-rs-set-based
+      labels:
+        app: python
+        environment: production
+        tier: frontend
+    spec:
+      containers:
+        - name: python
+          image: udaydevmac/python-app:latest
+          ports:
+            - containerPort: 80

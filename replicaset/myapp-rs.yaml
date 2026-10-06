@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: myapp
-          image: udaydevmac/pyton-app:latest
+          image: udaydevmac/python-app:latest
           ports:
             - containerPort: 80
   replicas: 3
