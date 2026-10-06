@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: myapp
   annotations: 
-    kubernetes.io/chnge-cause: "Initial version 1.19"
+    kubernetes.io/change-cause: "Initial version 1.19"
 spec:
   selector:
     matchLabels:
