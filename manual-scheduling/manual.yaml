@@ -9,4 +9,4 @@ spec:
     image: nginx
     ports:
       - containerPort: 80
-  nodeName: test-worker
+  nodeName: test-control-plane
