@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: high-prio-pod
+  labels:
+    app: nginx-app
+spec:
+  containers:
+  - name: nginx-container
+    image: nginx
+    ports:
+      - containerPort: 80
+  priorityClassName: high-priority
