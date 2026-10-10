@@ -3,4 +3,5 @@ kind: ConfigMap
 metadata:
   name: cm1-demo
 data:
-  key: value
+  APP: backend
+  ENV: prod

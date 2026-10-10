@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: ds-log
+  labels:
+    app: ds-log
+  namespace: log-ns
+spec:
+  selector:
+    matchLabels:
+      app: ds-log
+  template:
+    metadata:
+      labels:
+        app: ds-log
+    spec:
+      containers:
+      - name: ds-log
+        image: busybox
+        command: ["/bin/sh", "-c", "while true; do echo $(date) >> /var/log/ds-log.log; sleep 5; done"]
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        volumeMounts:
+        - name: log-volume
+          mountPath: /var/log
+      tolerations:
+        - operator: "Exists"
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - test-control-plane
+      volumes:
+      - name: log-volume
+        hostPath:
+          path: /var/log
+          type: Directory
