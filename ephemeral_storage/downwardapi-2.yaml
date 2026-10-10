@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: downwardapi-volume
+  labels:
+    app.kubernetes.io/name: myapp
+spec:
+  containers:
+  - name: busybox
+    image: busybox
+    command: ["sh","-c","cat /etc/podinfo && sleep 3600"]
+    resources:
+      requests:
+        cpu: "125m"
+        memory: "100Mi"
+      limits:
+        memory: "128Mi"
+        cpu: "500m"
+    volumeMounts:
+      - name: downwardapi-volume
+        mountPath: /etc/podinfo
+  volumes:
+    - name: downwardapi-volume
+      downwardApi: 
+        - path: labels
+          fieldRef:
+            fieldPath: meatdata.labels 

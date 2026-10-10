@@ -3,6 +3,8 @@ kind: Pod
 metadata:
   name: emptydir-demo
 spec:
+  terminationGracePeriodSeconds: 40
+  restartPolicy: OnFailure
   volumes:
     - name: temp-vol
       emptyDir:
@@ -10,6 +12,7 @@ spec:
   containers:
     - name: busybox-1
       image: busybox
+      imagePullPolicy: IfNotPresent
       command: ["sh","-c", sleep "3600"]
       resources:
         requests:
@@ -23,6 +26,7 @@ spec:
           name: temp-vol
     - name: busybox-2
       image: busybox
+      imagePullPolicy: IfNotPresent
       command: ["sh","-c", sleep "3600"]
       resources:
         requests:
