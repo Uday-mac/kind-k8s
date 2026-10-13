@@ -1,11 +1,9 @@
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
-  name: ssd-sc
+  name: hostpath-sc
 spec:
-  provisioner: kubernetes.io/aws-ebs
-  parameters:
-    type: gp2
-    fsType: ext4
+  provisioner: kubernetes.io/no-provisioner
   volumeBindingMode: WaitForFirstConsumer
-  
+    fsType: ext4
+
