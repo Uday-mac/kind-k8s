@@ -1,37 +1,35 @@
-apiVersion: v1
-kind: Secret
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
 metadata:
-  name: jenkins-sa-secret
-  namespace: jenkins
-  annotations: 
-    kubernetes.io/service-account.name: jenkins-sa
-type: kubernetes.io/service-account.token
+  name: test-network-policy
+  namespace: default
+spec:
+  podSelector:
+    matchLabels:
+      role: db
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - ipBlock:
+        cidr: 172.17.0.0/16
+        except:
+        - 172.17.1.0/24
+    - namespaceSelector:
+        matchLabels:
+          project: myproject
+    - podSelector:
+        matchLabels:
+          role: frontend
+    ports:
+    - protocol: TCP
+      port: 6379
+  egress:
+  - to:
+    - ipBlock:
+        cidr: 10.0.0.0/24
+    ports:
+    - protocol: TCP
+      port: 5978
 
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-  name: jenkins-cluster-role
-rules:
-  - apiGroups: [""]
-    resources: ["pods", "services", "endpoints"]
-    verbs: ["get", "list", "watch", "create", "delete", "patch", "update"]
-  - apiGroups: ["apps"]
-    resources: ["deployments", "replicasets"]
-    verbs: ["get", "list", "watch", "create", "delete", "patch", "update"]
-
----
-
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  name: jenkins-cluster-rolebinding
-subjects:
-  - kind: ServiceAccount
-    name: jenkins-sa
-    namespace: jenkins
-    apiGroup: ""
-roleRef:
-  kind: ClusterRole
-  name: jenkins-cluster-role
-  apiGroup: rbac.authorization.k8s.io

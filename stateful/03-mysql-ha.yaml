@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mysql
+  namespace: mysql-ha
+spec:
+  selector:
+    matchLabels:
+      app: mysql
+  serviceName: mysql-hs
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: myapp
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app: mysql
+              topologyKey: topology.kubernetes.io/zone
+      containers:
+      - name: mysql
+        image: mysql:8.0
+        ports:
+        - containerPort: 3306
+          name: db
+        readinessProbe:
+          tcpSocket:
+            port: 3306
+          initialDelaySeconds: 60
+          timeoutSeconds: 10
+        volumeMounts:
+        - name: mysql-data
+          mountPath: /var/lib/mysql
+  volumeClaimTemplates:
+  - metadata:
+      name: mysql-data
+    spec:
+      accessModes: [ "ReadWriteOncePod" ]
+      resources:
+        requests:
+          storage: 2Gi
+      storageClassName: ebs-sc-gp3

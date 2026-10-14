@@ -1,0 +1,13 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: mysql-hs
+  namespace: mysql-ha
+spec:
+  selector:
+    app: mysql
+  clusterIP: None
+  ports:
+  - name:  mysql_port
+    port:  2206
+    protocol: TCP
