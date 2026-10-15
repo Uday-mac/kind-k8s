@@ -17,7 +17,7 @@ spec:
             cidr: 0.0.0.0/0
       ports:
       - name:  http
-        port:  31000
+        port:  80
         protocol: TCP
   egress:
     - to:
@@ -29,3 +29,17 @@ spec:
       - name:  backend-port
         port:  5678
         protocol: TCP
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+          podSelector:
+            matchLabels:
+              k8s-app: kube-dns
+      ports:
+      - name:  DNS-1
+        port:  53
+        protocol: TCP
+      - name: DNS-2
+        port: 53
+        protocol: UDP

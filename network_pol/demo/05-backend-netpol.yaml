@@ -31,3 +31,17 @@ spec:
       - name:  db-port
         port:  3306
         protocol: TCP
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+          podSelector:
+            matchLabels:
+              k8s-app: kube-dns
+      ports:
+      - name:  DNS-1
+        port:  53
+        protocol: TCP
+      - name: DNS-2
+        port: 53
+        protocol: UDP
