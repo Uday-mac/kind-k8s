@@ -18,8 +18,8 @@ spec:
         type: frontend
     spec:
       containers:
-      - image: frontend-container
-        name:  nginx
+      - image: nginx
+        name:  frontend-container
         resources:
           requests:
             cpu: "20m"
@@ -45,5 +45,5 @@ spec:
   - name: frontend-port
     protocol: TCP
     port:  80
-    targetPort:  8080
+    targetPort: 8080
     nodePort: 31000

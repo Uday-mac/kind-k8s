@@ -1,0 +1,33 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: backend-netpol
+  namespace: app1-ns
+spec:
+  podSelector:
+    matchLabels:
+      app: app1
+      type: backend
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: app1
+              type: frontend
+      ports:
+      - name:  backend-port
+        port:  5678
+        protocol: TCP
+  egress:
+    - to:
+        - podSelector:
+            matchLabels:
+              app: app1
+              type: db
+      ports:
+      - name:  db-port
+        port:  3306
+        protocol: TCP

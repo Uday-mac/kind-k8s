@@ -19,3 +19,13 @@ spec:
       - name:  http
         port:  31000
         protocol: TCP
+  egress:
+    - to:
+        - podSelector:
+            matchLabels:
+              app: app1
+              type: backend
+      ports:
+      - name:  backend-port
+        port:  5678
+        protocol: TCP
