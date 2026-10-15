@@ -10,6 +10,7 @@ spec:
       type: db
   policyTypes:
     - Ingress
+    - Egress
   ingress:
     - from:
         - podSelector:
