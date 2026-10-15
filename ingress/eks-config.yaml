@@ -1,0 +1,41 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+metadata: 
+  name: eks-ingress-demo
+  region: us-east-1
+  version: "1.35"
+  tags:
+    owner: uday
+    project: ingress-demo
+
+iam:
+  withOIDC: true
+
+availabilityZones:
+  - us-east-1a
+  - us-east-1b
+
+managedNodeGroups:
+  - name: eks-ingress
+    instanceType: t3.small
+    minSize: 2
+    maxSize: 4
+    volumeSize: 20 # GiB allocated per node disk
+    privateNetworking: true # Places worker nodes in private subnets for enhanced security
+    iam:
+      withAddonPolicies:
+        autoScaler: true
+        externalDNS: false
+        certManager: yes
+        awsLoadBalancerController: true # Or albIngress: true in older versions
+        ebs: false
+        efs: false
+        fsx: false
+        imageBuilder: false
+        xRay: false
+        cloudWatch: false
+        appMesh: false
+        appMeshPreview: false
+    tags:
+      Environment: Production
+      Team: DevOps

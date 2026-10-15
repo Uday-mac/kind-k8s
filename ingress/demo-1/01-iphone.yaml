@@ -1,0 +1,55 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name:  iphone-deploy
+  labels:
+    app: iphone-page  
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: iphone-page
+  template:
+    metadata:
+      labels:
+        app: iphone-page
+    spec:
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: topology.kubernetes.io/zone
+          whenUnsatisfiable: ScheduleAnyway
+          labelSelector:
+            matchLabels:
+              app: iphone-page
+      containers:
+      - name: python-http
+        image: python:alpine
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+            mkdir -p /iphone && echo '<html>
+              <head><title>iPhone Users</title></head>
+              <body>
+                <h1>iPhone Users</h1>
+                <p>Welcome to Cloud With VarJosh</p>
+              </body>
+            </html>' > /iphone/index.html && cd / && python3 -m http.server 5678
+        ports:
+        - containerPort: 5678
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: iphone-svc
+  annotations:
+    alb.
+spec:
+  selector:
+    app: iphone-page
+  type: ClusterIP
+  ports:
+  - name: http-port
+    protocol: TCP
+    port: 80
+    targetPort: 5678
