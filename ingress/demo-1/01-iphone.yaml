@@ -43,7 +43,7 @@ apiVersion: v1
 metadata:
   name: iphone-svc
   annotations:
-    alb.
+    alb.ingress.kubernetes.io/healthcheck-path: /iphone/index.html
 spec:
   selector:
     app: iphone-page

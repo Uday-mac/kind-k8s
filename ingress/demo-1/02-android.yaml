@@ -1,0 +1,55 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name:  android-deploy
+  labels:
+    app: android-page  
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: android-page
+  template:
+    metadata:
+      labels:
+        app: android-page
+    spec:
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: topology.kubernetes.io/zone
+          whenUnsatisfiable: ScheduleAnyway
+          labelSelector:
+            matchLabels:
+              app: android-page
+      containers:
+      - name: android-http
+        image: python:alpine
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+            mkdir -p /android && echo '<html>
+              <head><title>Android Users</title></head>
+              <body>
+                <h1>iPhone Users</h1>
+                <p>Welcome to Cloud With VarJosh</p>
+              </body>
+            </html>' > /android/index.html && cd / && python3 -m http.server 5678
+        ports:
+        - containerPort: 5678
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: android-svc
+  annotations:
+    alb.ingress.kubernetes.io/healthcheck-path: /android/index.html
+spec:
+  selector:
+    app: android-page
+  type: ClusterIP
+  ports:
+  - name: http-port
+    protocol: TCP
+    port: 80
+    targetPort: 5678
